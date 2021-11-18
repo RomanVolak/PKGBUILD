@@ -1,0 +1,38 @@
+
+
+pkgname=apk-editor-studio
+pkgver=1.6.0
+pkgrel=1
+pkgdesc="Powerful yet easy to use APK editor"
+arch=('x86_64')
+url='https://qwertycube.com/apk-editor-studio'
+license=('GPL3')
+depends=('qt5-base'
+         'java-runtime>=8'
+         'hicolor-icon-theme'
+         'android-sdk-build-tools'
+         'android-sdk-platform-tools'
+         'android-apktool')
+optdepends=('libsecret: Enable password manager backend')
+makedepends=('qt5-base')
+source=("${pkgname}-${pkgver}.tar.gz::https://github.com/kefir500/apk-editor-studio/archive/v${pkgver}.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    mkdir -p build
+    cd "$srcdir/build"
+    cmake ../"${pkgname}-${pkgver}" \
+    -G Ninja \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_PREFIX_PATH=/usr \
+    -Wno-dev
+  
+    ninja
+}
+
+package() {
+    cd "$srcdir/build"
+    DESTDIR="$pkgdir" ninja install
+}
+
